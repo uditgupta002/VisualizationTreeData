@@ -1,23 +1,22 @@
 var nodes_data = [];
 var links_data = [];
 
-d3.csv("data/anand_project_data.csv", function(error, data) {
+d3.csv("data/annotate_posts_of_thread_length30.csv", function(error, data) {
     if (error) {
         throw error;
     }
 
     data.forEach(function(d) {
         var obj = {
-            "index" : d.index,
-            "author" : d.author,
+            "index" : "d.index",
+            "author" : d.Author,
             "DateTimeStamp" : d.DateTimeStamp,
             "Body" : d.Body,
             "Thread" : d.Thread,
-            "PostsinThread" : d.PostsinThread,
-            "psuedoId" : d.psuedoId,
-            "id" : d.id
+            "PostsinThread" : d.PostsInThread,
+            //"psuedoId" : d.psuedoId,
+            "id" : d.ID
         };
-        console.log(d.parentId);
         if(d.parentId != null && d.parentId !== '')
             obj["parentId"] = d.parentId;
         else
@@ -27,14 +26,15 @@ d3.csv("data/anand_project_data.csv", function(error, data) {
     nodes_data.push({id: "Root"});
 
     var stratified_data = d3.stratify()(nodes_data);
-    console.log(stratified_data)
-
 
     // set the dimensions and margins of the diagram
     var margin = {top: 40, right: 90, bottom: 50, left: 90},
-        width = 1000 - margin.left - margin.right,
-        height = 600 - margin.top - margin.bottom;
+        height = 800 - margin.top - margin.bottom;
 
+    var leafNodes = Math.pow(2, stratified_data.height);
+    var width = 1200;
+
+    width = Math.max(width, leafNodes * 230 * 4);
     // declares a tree layout and assigns the size
     var treemap = d3.tree()
         .size([width, height]);
@@ -45,22 +45,35 @@ d3.csv("data/anand_project_data.csv", function(error, data) {
     //var nodes = nodes_data;
     // maps the node data to the tree layout
     nodes = treemap(nodes);
+    var descendents = nodes.descendants().slice(1);
 
+    descendents.forEach(function(d) { d.y = d.depth * 400 * 2; });
 
     // append the svg obgect to the body of the page
     // appends a 'group' element to 'svg'
     // moves the 'group' element to the top left margin
-    var svg = d3.select("body").append("svg")
+    var svg = d3.select("body")
+            .append("svg")
             .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom),
-        g = svg.append("g")
-            .attr("transform",
-                "translate(" + margin.left + "," + margin.top + ")");
+            .attr("height", height * (stratified_data.height + 1) + margin.bottom + margin.top);
+
+    //         .call(d3.zoom()
+    //             .scaleExtent([1 / 8, 8])
+    //             .on("zoom", zoomed));
+    //
+    // function zoomed() {
+    //     svg.attr("transform", d3.event.transform);
+    // }
+
+    var g = svg.append("g")
+            .attr("transform", "translate(" + margin.right + "," + margin.top + ")");
+
 
     // adds the links between the nodes
     var link = g.selectAll(".link")
         .data( nodes.descendants().slice(1))
-        .enter().append("path")
+        .enter()
+        .append("path")
         .attr("class", "link")
         .attr("d", function(d) {
             return "M" + d.x + "," + d.y
@@ -80,17 +93,48 @@ d3.csv("data/anand_project_data.csv", function(error, data) {
         .attr("transform", function(d) {
             return "translate(" + d.x + "," + d.y + ")"; });
 
-    // adds the circle to the node
-    node.append("circle")
-        .attr("r", 10);
 
-    // adds the text to the node
-    node.append("text")
-        .attr("dy", ".35em")
-        .attr("x", function(d) { return d.children ? -40 : 0; })
-        .attr("y", function(d) { return d.children ? 0 : 20; })
-        .style("text-anchor", "middle")
-        .text(function(d) { return d.data.id; });
+    appendData(node);
+
+    function appendData(node) {
+        var rect = node.append("rect")
+            .attr("x", function(d) {
+                var width = 115 * 2;
+                return -width / 2;
+            })
+            .attr("y", 0)
+            .attr("width",115 * 2)
+            .attr("height",150 * 2)
+            .style("stroke","black")
+            .style("fill", "White");
+
+        var text = node.append('svg:text')
+            .attr('y', 0)
+            .attr("text-anchor", "middle")
+            .attr('class', 'id');
+
+        text.selectAll("tspan.text")
+            .data(function(d) {
+                var dataList = [];
+                if(d.data.Body != null) {
+                    dataList.push("Id: " + d.data.id + " Author: " + d.data.author);
+                    for (var i = 0; i < d.data.Body.length && dataList.length < 13; i += 33) {
+                        dataList.push(d.data.Body.substring(i, i + 33));
+                    }
+                } else {
+                    dataList.push("Id: " + d.data.id);
+                    dataList.push("Total Conversations: " + d.children.length);
+                }
+                return dataList;
+            })
+            .enter()
+            .append("tspan")
+            .attr("class", "text")
+            .text(function(d) { return d; })
+            .attr("x", 0)
+            .attr("dy", 22);
+    }
+
 
 
 
@@ -121,10 +165,13 @@ d3.csv("data/anand_project_data.csv", function(error, data) {
             "</tr>" +
             "</thead>" +
             "<tbody>";
+
+
             for (var key in data) {
+                var str = data[key];
                 html += "<tr>" +
                         "<td>" + key + "</td>" +
-                        "<td class=\"cell-breakWord\">" + data[key] + "</td>" +
+                        "<td class=\"cell-breakWord\">" + str + "</td>" +
                         "</tr>";
             }
             html += "</tr></tbody>" +

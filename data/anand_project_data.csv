@@ -1,11 +1,20 @@
-id,psuedoId,author,DateTimeStamp,Body,Thread,PostsinThread,index,parentId
+ID,psuedoId,Author,DateTimeStamp,Body,Thread,PostsInThread,index,parentId
 1,112,Orlando,2019-10-07,Some random textSome random textSome random textSome random textSome random textSome random text,music.production,50,255,5
 2,113,Orlando,2019-10-07,Some random text,music.production,50,255,5
-3,114,Orlando,2019-10-07,Some random text,music.production,50,2553
+3,114,Orlando,2019-10-07,Some random text,music.production,50,255,4
 4,115,Orlando,2019-10-07,Some random text,music.production,50,255,
 5,116,Orlando,2019-10-07,Some random text,music.production,50,255,
 6,117,Orlando,2019-10-07,Some random text,music.production,50,255,3
 7,118,Orlando,2019-10-07,Some random text,music.production,50,255,
 8,119,Orlando,2019-10-07,original,music.production,50,255,3
-8,119,Orlando,2019-10-07,duplicate,music.production,50,255,4
+9,119,Orlando,2019-10-07,duplicate,music.production,50,255,4
 10,120,Orlando,2019-10-07,Some random text,music.production,50,255,2
+11,120,Orlando,2019-10-07,Some random text,music.production,50,255,2
+17,120,Orlando,2019-10-07,Some random text,music.production,50,255,2
+18,120,Orlando,2019-10-07,Some random text,music.production,50,255,2
+19,120,Orlando,2019-10-07,Some random text,music.production,50,255,2
+20,120,Orlando,2019-10-07,Some random text,music.production,50,255,2
+21,120,Orlando,2019-10-07,Some random text,music.production,50,255,9
+22,120,Orlando,2019-10-07,Some random text,music.production,50,255,9
+23,120,Orlando,2019-10-07,Some random text,music.production,50,255,9
+24,120,Orlando,2019-10-07,Some random text,music.production,50,255,9
